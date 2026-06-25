@@ -4,7 +4,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "npx prisma db push --accept-data-loss && node server.js",
     "dev": "node --watch server.js",
     "generate": "npx prisma generate"
   },
