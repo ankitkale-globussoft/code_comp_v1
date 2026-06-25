@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String?  // Null for GUEST users
+  role      String   @default("USER") // ADMIN, USER, GUEST
+  createdAt DateTime @default(now())
+}
+
+model Question {
+  id           String   @id @default(uuid())
+  title        String
+  difficulty   String
+  topics       String[] // e.g., ["Arrays", "Two Pointers"]
+  description  String
+  constraints  String[]
+  inputFormat  String?
+  outputFormat String?
+  functionName String
+  starterCode  Json     // Storing the language templates
+  sampleTestCase Json
+  testCases    Json
+  solution     String?
+  createdAt    DateTime @default(now())
+
+  // Relationships
+  rooms        Room[]
+}
+
+model Room {
+  id          String   @id
+  difficulty  String
+  topics      String[]
+  timeLimit   Int
+  status      String   // LOBBY, GENERATING, PLAYING, OVER
+  startedAt   DateTime?
+  
+  // A room may be tied to a specific generated question
+  questionId  String?
+  question    Question? @relation(fields: [questionId], references: [id])
+
+  createdAt   DateTime @default(now())
+}
+
+model Setting {
+  key   String @id
+  value String
+}

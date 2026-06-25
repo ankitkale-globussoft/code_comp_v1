@@ -1,0 +1,24 @@
+services:
+  # The web service that serves both Node.js backend and React frontend
+  - type: web
+    name: code-arena
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Automatically links to the database created below
+      - key: DATABASE_URL
+        fromDatabase:
+          name: code-arena-db
+          property: connectionString
+      # Automatically generates a secure random string for JWT authentication
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  # The PostgreSQL database
+  - name: code-arena-db
+    databaseName: code_comp_v1
+    user: code_arena_admin
